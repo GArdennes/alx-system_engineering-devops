@@ -1,2 +1,1 @@
-#!/bin/bash
-find . -type f -ctime -5
+ls -t -1 | head
