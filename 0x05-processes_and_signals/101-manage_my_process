@@ -5,7 +5,7 @@ PID_FILE="/var/run/my_process.pid"
 
 start_function() {
 	if [ -e "$FILE" ]; then
-		"$FILE" &
+		./"$FILE" &
 		echo $! > "$PID_FILE"
 		echo "manage_my_process started"
 	fi
@@ -15,7 +15,7 @@ stop_function() {
 	if [ -e "$FILE" ]; then
 		pid=$(cat "$PID_FILE")
 		kill "$pid"
-		rm "$PID_FILE"
+		rm -f "$PID_FILE"
 		echo "manage_my_process stopped"
 	fi
 }
