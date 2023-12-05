@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Configure HAProxy to send traffic to web-01 and web-02 servers
+
+# Install and configure HAproxy on my lb-01 server.
+ufw allow 1344
+sudo apt-get -y update
+apt-get -y install haproxy
+
+# edit config file
+server_config=\
+"
+frontend  gardennes_frontend
+        bind *:80
+        mode http
+        default_backend gardennes_backend
+backend gardennes_backend
+        balance roundrobin
+        server 243143-web-01 3.85.168.83:80 check
+        server 243143-web-02 35.153.98.141:80 check
+"
+echo "$server_config" | sudo tee -a /etc/haproxy/haproxy.cfg
+
+# enable haproxy to be started by init script
+echo "ENABLED=1" | sudo tee -a /etc/default/haproxy
+
+# Testing the HAproxy configuration file
+sudo haproxy -c -f /etc/haproxy/haproxy.cfg
+
+# Restart the Nginx service
+sudo service haproxy restart
