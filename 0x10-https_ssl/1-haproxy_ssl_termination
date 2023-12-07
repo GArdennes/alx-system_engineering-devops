@@ -1,0 +1,18 @@
+global
+  maxconn 4096
+
+defaults
+  mode    http
+  timeout connect 5000ms
+  timeout client 50000ms
+  timeout server 50000ms
+
+frontend proxynode
+        bind *:80
+        bind *:443 ssl crt /etc/letsencrypt/live/www.gardennes.tech/gardennes.pem
+        mode http
+        default_backend web-backend
+backend web-backend
+        balance roundrobin
+        server 243143-web-01 3.85.168.83:80 check
+        server 243143-web-02 35.153.98.141:80 check
