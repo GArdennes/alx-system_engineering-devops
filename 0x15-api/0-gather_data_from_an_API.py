@@ -47,6 +47,6 @@ if __name__ == "__main__":
                 "Employee {} is done with tasks ({}/{}):".format(
                     employee_name, len(done_tasks), total_tasks))
         for task in done_tasks:
-            print("\t {}".format(task))
+            print("\t {}".format(task['title']))
     else:
         print("Failed to retrieve TODO progress.")
