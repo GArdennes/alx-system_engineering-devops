@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+"""Script that uses a REST API and returns information about an employee"""
 from sys import argv
 import requests
 
