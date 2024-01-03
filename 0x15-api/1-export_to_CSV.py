@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """Script that uses a REST API and returns information about an employee"""
+import csv
 import requests
 from sys import argv
 
@@ -36,17 +37,22 @@ if __name__ == "__main__":
         exit(1)
     employee_id = int(argv[1])
     todo_progress = get_todo_progress(employee_id)
+    path = "{}.csv".format(employee_id)
 
     if todo_progress:
-        employee_name = todo_progress['name']
         user_data = todo_progress['user']
-        task_list = todo_progress['todos']
-        total_tasks = len(task_list)
-        done_tasks = [task for task in task_list if task.get('completed')]
-        print(
-                "Employee {} is done with tasks ({}/{}):".format(
-                    employee_name, len(done_tasks), total_tasks))
-        for task in done_tasks:
-            print("\t {}".format(task['title']))
+        todo_list = todo_progress['todos']
+        with open(path, 'w', encoding='utf-8') as csvfile:
+            writer = csv.writer(
+                    csvfile,
+                    delimiter=',',
+                    quoting=csv.QUOTE_ALL)
+            for todo in todo_list:
+                writer.writerow([
+                    employee_id,
+                    user_data.get('username'),
+                    todo.get('completed'),
+                    todo.get('title')
+                    ])
     else:
         print("Failed to retrieve TODO progress.")
