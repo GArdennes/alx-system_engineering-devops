@@ -1,27 +1,30 @@
 #!/usr/bin/python3
-'''
-Python script that uses a REST API, to get info for a given employee ID
-'''
+""" Script that uses JSONPlaceholder API to get information about employee """
+import json
 import requests
-from sys import argv
+import sys
+
 
 if __name__ == "__main__":
-    if len(argv) > 1:
-        user = argv[1]
-        url = "https://jsonplaceholder.typicode.com/"
-        req = requests.get("{}users/{}".format(url, user))
-        name = req.json().get("name")
-        if name is not None:
-            jreq = requests.get(
-                "{}todos?userId={}".format(
-                    url, user)).json()
-            alltsk = len(jreq)
-            completedtsk = []
-            for t in jreq:
-                if t.get("completed") is True:
-                    completedtsk.append(t)
-            count = len(completedtsk)
-            print("Employee {} is done with tasks({}/{}):"
-                  .format(name, count, alltsk))
-            for title in completedtsk:
-                print("\t {}".format(title.get("title")))
+    url = 'https://jsonplaceholder.typicode.com/'
+    user = '{}users'.format(url)
+    res = requests.get(user)
+    json_o = res.json()
+    d_task = {}
+    for user in json_o:
+        name = user.get('username')
+        userid = user.get('id')
+        todos = '{}todos?userId={}'.format(url, userid)
+        res = requests.get(todos)
+        tasks = res.json()
+        l_task = []
+        for task in tasks:
+            dict_task = {"username": name,
+                         "task": task.get('title'),
+                         "completed": task.get('completed')}
+            l_task.append(dict_task)
+
+        d_task[str(userid)] = l_task
+    filename = 'todo_all_employees.json'
+    with open(filename, mode='w') as f:
+        json.dump(d_task, f)
