@@ -2,6 +2,7 @@
 '''
 Python script that uses a REST API, to get info for a given employee ID
 '''
+import json
 import requests
 from sys import argv
 
@@ -10,18 +11,21 @@ if __name__ == "__main__":
         user = argv[1]
         url = "https://jsonplaceholder.typicode.com/"
         req = requests.get("{}users/{}".format(url, user))
-        name = req.json().get("name")
+        j_son = req.json()
+        name = j_son.get("username")
         if name is not None:
             jreq = requests.get(
                 "{}todos?userId={}".format(
                     url, user)).json()
-            alltsk = len(jreq)
             completedtsk = []
             for t in jreq:
-                if t.get("completed") is True:
-                    completedtsk.append(t)
-            count = len(completedtsk)
-            print("Employee {} is done with tasks({}/{}):"
-                  .format(name, count, alltsk))
-            for title in completedtsk:
-                print("\t {}".format(title.get("title")))
+                tsk = {
+                        'task': t.get('title'),
+                        'completed': t.get('completed'),
+                        'username': name
+                        }
+                completedtsk.append(tsk)
+                d_task = {str(user): tsk}
+                filename = '{}.json'.format(user)
+                with open(filename, mode='w') as jsonfile:
+                    json.dump(d_task, jsonfile)
