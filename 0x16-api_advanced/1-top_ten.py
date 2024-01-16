@@ -16,7 +16,12 @@ def top_ten(subreddit):
     headers = {'User-Agent': 'Google Chrome'}
     params = {'limit': 10}
     try:
-        response = requests.get(url, headers=headers, allow_redirects=False, params=params)
+        response = requests.get(
+                url,
+                headers=headers,
+                allow_redirects=False,
+                params=params
+                )
         response.raise_for_status()
         if response.status_code == 200:
             results = response.json()
@@ -27,4 +32,3 @@ def top_ten(subreddit):
             print('None')
     except requests.exceptions.RequestException as error:
         print('None')
-
